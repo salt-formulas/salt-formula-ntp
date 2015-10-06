@@ -1,0 +1,24 @@
+
+{% set client = salt['grains.filter_by']({
+    'Arch': {
+        'service': 'ntpd',
+    },
+    'Debian': {
+        'service': 'ntp',
+    },
+    'RedHat': {
+        'service': 'ntpd',
+    },
+}, merge=salt['pillar.get']('ntp:client')) %}
+
+{% set server = salt['grains.filter_by']({
+    'Arch': {
+        'service': 'ntpd',
+    },
+    'Debian': {
+        'service': 'ntp',
+    },
+    'RedHat': {
+        'service': 'ntpd',
+    },
+}, merge=salt['pillar.get']('ntp:server')) %}

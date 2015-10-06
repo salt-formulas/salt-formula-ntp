@@ -1,0 +1,12 @@
+applications:
+- ntp
+parameters:
+  _param:
+    ntp_strata_host1: ntp.cesnet.cz
+    ntp_strata_host2: ntp.nic.cz
+  ntp:
+    client:
+      enabled: true
+      strata:
+      - ${_param:ntp_strata_host1}
+      - ${_param:ntp_strata_host2}
