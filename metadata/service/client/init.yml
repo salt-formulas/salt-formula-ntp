@@ -3,7 +3,7 @@ applications:
 parameters:
   _param:
     ntp_strata_host1: ntp.cesnet.cz
-    ntp_strata_host2: ntp.nic.cz
+    ntp_strata_host2: pool.ntp.org
   ntp:
     client:
       enabled: true
