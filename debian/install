@@ -1,2 +1,0 @@
-ntp/*             /usr/share/salt-formulas/env/ntp/
-metadata/service/*      /usr/share/salt-formulas/reclass/service/ntp/
