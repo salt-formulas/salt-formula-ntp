@@ -1,0 +1,8 @@
+name: ntp
+os: Arch, Debian, RedHat
+os_family: Arch, Debian, RedHat
+version: 201606
+release: 1
+summary: NTP salt formula
+description: Install and configure NTP client and server.
+top_level_dir: ntp
