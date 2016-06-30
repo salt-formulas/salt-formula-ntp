@@ -1,0 +1,4 @@
+plugin:
+  ntp_client_ntpd:
+    plugin: ntpd
+    interval: 60

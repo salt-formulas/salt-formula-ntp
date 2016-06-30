@@ -1,0 +1,7 @@
+check:
+  local_ntp_client_proc:
+    command: "PATH=$PATH:/usr/lib64/nagios/plugins:/usr/lib/nagios/plugins check_procs -C ntpd -u ntp -c 1:1"
+    interval: 30
+    occurrences: 3
+    subscribers:
+      - local-ntp-client

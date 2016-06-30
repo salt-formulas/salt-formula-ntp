@@ -1,5 +1,7 @@
 applications:
 - ntp
+classes:
+  - service.ntp.support
 parameters:
   _param:
     ntp_strata_host1: ntp.cesnet.cz
