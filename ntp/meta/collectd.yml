@@ -1,5 +1,5 @@
 plugin:
-  ntp_service:
+  ntp_server_status:
     plugin: ntpd
     execution: local
     template: ntp/files/collectd_ntpd.conf
