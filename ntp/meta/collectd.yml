@@ -1,4 +1,5 @@
 plugin:
-  ntp_client_ntpd:
+  ntp_service:
     plugin: ntpd
-    interval: 60
+    execution: local
+    template: ntp/files/collectd_ntpd.conf
