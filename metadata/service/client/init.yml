@@ -12,4 +12,3 @@ parameters:
       strata:
       - ${_param:ntp_strata_host1}
       - ${_param:ntp_strata_host2}
-      mode7: false
