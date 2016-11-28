@@ -1,8 +1,5 @@
-{% from "ntp/map.jinja" import client with context %}
-
-{%- if client.get('enabled', False) and client.mode7 %}
-local_plugin:
+plugin:
   ntp_server_status:
     plugin: ntpd
+    execution: local
     template: ntp/files/collectd_ntpd.conf
-{%- endif %}
