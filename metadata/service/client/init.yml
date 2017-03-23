@@ -14,3 +14,4 @@ parameters:
       - ${_param:ntp_strata_host2}
     server:
       enabled: false
+      mode7: false
