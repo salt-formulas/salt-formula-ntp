@@ -2,10 +2,7 @@
 driver:
   name: docker
   hostname: ntp.ci.local
-  #socket: tcp://127.0.0.1:2376
   use_sudo: false
-
-
 
 provisioner:
   name: salt_solo
@@ -13,8 +10,10 @@ provisioner:
   salt_bootstrap_url: https://bootstrap.saltstack.com
   salt_version: latest
   require_chef: false
+  log_level: error
   formula: ntp
-  log_level: info
+  grains:
+    noservices: True
   state_top:
     base:
       "*":
@@ -24,20 +23,16 @@ provisioner:
       base:
         "*":
           - ntp
-  grains:
-    noservices: True
-
-
-platforms:
-  - name: ubuntu-14.04
-  - name: ubuntu-16.04
-  - name: centos-7.1
-
 
 verifier:
   name: inspec
   sudo: true
 
+platforms:
+  - name: <%=ENV['PLATFORM'] || 'ubuntu-xenial'%>
+    driver_config:
+      image: <%=ENV['PLATFORM'] || 'trevorj/salty-whales:xenial'%>
+      platform: ubuntu
 
 suites:
 
@@ -50,5 +45,4 @@ suites:
     provisioner:
       pillars-from-files:
         ntp.sls: tests/pillar/server.sls
-
 # vim: ft=yaml sw=2 ts=2 sts=2 tw=125
