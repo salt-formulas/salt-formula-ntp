@@ -1,4 +1,3 @@
-
 {% set client = salt['grains.filter_by']({
     'Arch': {
         'service': 'ntpd',
@@ -6,7 +5,7 @@
     },
     'Debian': {
         'service': 'ntp',
-        'mode7': False,
+        'mode7': False
     },
     'RedHat': {
         'service': 'ntpd',
