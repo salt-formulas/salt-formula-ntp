@@ -1,8 +1,4 @@
 ntp:
-  client:
-    enabled: false
-    strata:
-    - ""
   server:
     enabled: true
     strata:
@@ -13,4 +9,8 @@ ntp:
         mask: 255.255.255.0
       - subnet: 172.16.1.1
         mask: 255.255.0.0
-      mode7: true
+    mode7: true
+  client:
+    enabled: false
+    strata:
+    - ""
