@@ -1,0 +1,7 @@
+{%- from "ntp/map.jinja" import client with context %}
+{%- if client is defined and client.get('enabled', False) %}
+agent:
+  input:
+    ntp:
+      template: ntp/files/telegraf.conf
+{%- endif %}
