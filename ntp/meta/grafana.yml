@@ -1,0 +1,5 @@
+dashboard:
+  ntp_prometheus:
+    datasource: prometheus
+    format: json
+    template: ntp/files/grafana_dashboards/ntp_prometheus.json
