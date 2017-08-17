@@ -1,0 +1,17 @@
+{%- from "ntp/map.jinja" import client with context %}
+
+{%- if client.get('enabled', False) %}
+{%- raw %}
+server:
+  alert:
+    NtpOffset:
+      if: >-
+        ntpq_offset >= 250
+      labels:
+        severity: warning
+        service: ntp
+      annotations:
+        summary: 'NTP offset is too high'
+        description: 'NTP offset is higher than 250ms on node {{ $labels.host }}'
+{%- endraw %}
+{%- endif %}
