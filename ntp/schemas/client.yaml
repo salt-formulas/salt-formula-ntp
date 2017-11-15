@@ -1,0 +1,30 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/yaml-schema/draft-01"
+title: NTP client role
+description: |
+  NTP service, client role.
+type: object
+additionalProperties: false
+
+required:
+- enabled
+
+properties:
+  enabled:
+    description: |
+      Enables NTP client service.
+    type: boolean
+  strata:
+    description: |
+      List of NTP stratums to keep the time in sync.
+    type: array
+    items:
+      $ref: "#/definitions/stratum"
+
+definitions:
+  stratum:
+    description: |
+      Hostname or IP address of the stratum server.
+    type: string
+    format: hostname-ip

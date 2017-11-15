@@ -1,0 +1,15 @@
+graph:
+{%- if pillar.get('ntp', {}).client is defined %}
+{%- from "ntp/map.jinja" import client with context %}
+- host: {{ grains.id }}
+  service: ntp.client
+  type: software-system
+  relations:
+  {%- for stratum in client.strata %}
+  - service: other-service
+    host_external: udp://{{ stratum }}
+    direction: source
+    type: udp
+  {%- endfor %}
+{%- endif %}
+

@@ -1,0 +1,70 @@
+%YAML 1.1
+---
+$schema: "http://stsci.edu/schemas/yaml-schema/draft-01"
+title: NTP server role
+description: |
+  NTP service, server role.
+type: object
+additionalProperties: false
+
+required:
+- enabled
+
+properties:
+  enabled:
+    description: |
+      Enables NTP server service.
+    type: boolean
+  mode7:
+    description: |
+      Enables mode7 for the NTP server.
+    type: boolean
+  orphan:
+    description: |
+      Sets the orphan level of the NTP server.
+    type: number
+    minimum: 0
+    maximum: 8
+  restrict:
+    description: |
+      List of subnets that servers gives time to.
+    type: array
+    items:
+      $ref: "#/definitions/restrict"
+  peers:
+    description: |
+      List of peered NTP stratum services.
+    type: array
+    items:
+      $ref: "#/definitions/peer"
+
+definitions:
+  restrict:
+    description: |
+      Restrict the service to given networks.
+    type: object
+    flowStyle: block
+    propertyOrder: [subnet, mask,options]
+    required: [subnet, mask]
+    properties:
+      subnet:
+        description: |
+          IP address of the network
+        type: string
+        style: inline
+      mask:
+        description: |
+          Subnet mask of the network
+        type: string
+        style: inline
+      options:
+        description: |
+          Additional options passed to the net [notrap nomodify]
+        type: string
+        style: inline
+    additionalProperties: false
+  peer:
+    description: |
+      Hostname or IP address of the peer server.
+    type: string
+    format: hostname-ip
