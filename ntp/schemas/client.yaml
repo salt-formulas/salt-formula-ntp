@@ -1,6 +1,6 @@
 %YAML 1.1
 ---
-$schema: "http://stsci.edu/schemas/yaml-schema/draft-01"
+"$schema": "http://json-schema.org/draft-06/schema#"
 title: NTP client role
 description: |
   NTP service, client role.

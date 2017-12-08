@@ -1,6 +1,6 @@
 %YAML 1.1
 ---
-$schema: "http://stsci.edu/schemas/yaml-schema/draft-01"
+"$schema": "http://json-schema.org/draft-06/schema#"
 title: NTP server role
 description: |
   NTP service, server role.
@@ -37,6 +37,12 @@ properties:
     type: array
     items:
       $ref: "#/definitions/peer"
+  strata:
+    description: |
+      List of NTP stratums to keep the time in sync.
+    type: array
+    items:
+      $ref: "#/definitions/stratum"
 
 definitions:
   restrict:
@@ -66,5 +72,10 @@ definitions:
   peer:
     description: |
       Hostname or IP address of the peer server.
+    type: string
+    format: hostname-ip
+  stratum:
+    description: |
+      Hostname or IP address of the stratum server.
     type: string
     format: hostname-ip
