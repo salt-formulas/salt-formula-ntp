@@ -44,10 +44,10 @@ setup_virtualenv() {
     log_info "Setting up Python virtualenv"
     virtualenv $VENV_DIR
     source ${VENV_DIR}/bin/activate
-    pip install salt${PIP_SALT_VERSION}
-    pip install reno
+    python -m pip install salt${PIP_SALT_VERSION}
+    python -m pip install reno
     if [[ -f ${CURDIR}/pip_requirements.txt ]]; then
-       pip install -r ${CURDIR}/pip_requirements.txt
+       python -m pip install -r ${CURDIR}/pip_requirements.txt
     fi
 }
 
@@ -150,7 +150,7 @@ clean() {
 
 salt_run() {
     [ -e ${VENV_DIR}/bin/activate ] && source ${VENV_DIR}/bin/activate
-    salt-call ${SALT_OPTS} $*
+    python $(which salt-call) ${SALT_OPTS} $*
 }
 
 prepare() {
