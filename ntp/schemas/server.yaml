@@ -30,27 +30,52 @@ properties:
       List of subnets that servers gives time to.
     type: array
     items:
-      $ref: "#/definitions/restrict"
+      $ref: "#/definitions/_ntp:server:restrict"
   peers:
     description: |
       List of peered NTP stratum services.
     type: array
     items:
-      $ref: "#/definitions/peer"
+      $ref: "#/definitions/_ntp:server:peer"
   strata:
     description: |
       List of NTP stratums to keep the time in sync.
     type: array
     items:
-      $ref: "#/definitions/stratum"
-
+      $ref: "#/definitions/_ntp:common:strata"
+  stratum:
+    description: |
+      List of NTP stratums to keep the time in sync. If define used instead of strata
+    type: object
+    patternProperties:
+      "^[0-9]*$":
+        $ref: "#/definitions/_ntp:common:stratum"
+  auth:
+    description: |
+     Support of ntp auth.
+    type: object
+    additionalProperties: false
+    required: [enabled, secrets]
+    properties:
+      enabled:
+        description: |
+          Enables NTP auth.
+        type: boolean
+      secrets:
+        description: |
+          Dict with secrets
+        type: object
+        additionalProperties: false
+        minProperties: 1
+        patternProperties:
+          "^[0-9]*$":
+            $ref: '#/definitions/_ntp:common:secret'
 definitions:
-  restrict:
+  _ntp:server:restrict:
     description: |
       Restrict the service to given networks.
     type: object
-    flowStyle: block
-    propertyOrder: [subnet, mask,options]
+    additionalProperties: false
     required: [subnet, mask]
     properties:
       subnet:
@@ -63,19 +88,75 @@ definitions:
           Subnet mask of the network
         type: string
         style: inline
+        example: 255.255.255.0
       options:
         description: |
           Additional options passed to the net [notrap nomodify]
         type: string
         style: inline
-    additionalProperties: false
-  peer:
+  _ntp:server:peer:
     description: |
-      Hostname or IP address of the peer server.
-    type: string
-    format: hostname-ip
-  stratum:
+      Configuration one  peer server address.
+    type: object
+    additionalProperties: false
+    minProperties: 1
+    required: [host]
+    properties:
+      host:
+        type: string
+      key_id:
+        type: integer
+  _ntp:common:strata:
     description: |
       Hostname or IP address of the stratum server.
     type: string
     format: hostname-ip
+  _ntp:common:stratum:
+    description: |
+      Define exactly one ntp stratum server with more parameters.
+    type: object
+    additionalProperties: false
+    minProperties: 1
+    required: [server] #, key_id ]
+    properties:
+      server:
+        type: string
+      key_id:
+        type: integer
+  _ntp:common:interface:
+    description: |
+      Define exactly one ntp interface to configure.
+    type: object
+    additionalProperties: false
+    minProperties: 1
+    required: [action,value]
+    properties:
+      action:
+        description: |
+          Determines the action for addresses which match
+        type: string
+        eval: [listen, ignore, drop ]
+      value:
+        description: |
+          That parameter specifies a class of addresses, or a specific
+          interface name, or an address. In the address case, prefixlen
+          determines how many bits must match for this rule to apply.
+          ignore prevents opening matching addresses, drop causes ntpd to
+          open the address and drop all received packets without examination.
+        type: string
+        example: "all | ipv4 | ipv6 | wildcard | name | address[/prefixlen]"
+  _ntp:common:secret:
+    description: |
+     Define exactly one ntp auth secret
+    type: object
+    additionalProperties: false
+    minProperties: 1
+    required: [secret_type, secret, trustedkey ]
+    properties:
+      secret_type:
+        type: string
+      secret:
+        type: string
+      trustedkey:
+        type: boolean
+

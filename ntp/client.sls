@@ -37,6 +37,23 @@ ntp_client_group_and_user:
 
 {%- endif %}
 
+{%- if client.get('auth', {}).get('enabled', False) %}
+
+ntp_keys_client:
+  file.managed:
+  - name: /etc/ntp.keys
+  - source: salt://ntp/files/ntp.keys
+  - user: root
+  - group: root
+  - mode: 600
+  - template: jinja
+  - require:
+    - pkg: ntp_packages
+  - watch_in:
+    - ntp_service
+
+{%- endif %}
+
 /etc/ntp.conf:
   file.managed:
   - source: salt://ntp/files/ntp.conf

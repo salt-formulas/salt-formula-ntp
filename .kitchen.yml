@@ -45,4 +45,14 @@ suites:
     provisioner:
       pillars-from-files:
         ntp.sls: tests/pillar/server.sls
+
+  - name: client_auth
+    provisioner:
+      pillars-from-files:
+        ntp.sls: tests/pillar/client_auth.sls
+
+  - name: server_auth
+    provisioner:
+      pillars-from-files:
+        ntp.sls: tests/pillar/server_auth.sls
 # vim: ft=yaml sw=2 ts=2 sts=2 tw=125

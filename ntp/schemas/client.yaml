@@ -1,6 +1,4 @@
-%YAML 1.1
----
-"$schema": "http://json-schema.org/draft-06/schema#"
+$schema: "http://json-schema.org/draft-06/schema#"
 title: NTP client role
 description: |
   NTP service, client role.
@@ -15,16 +13,74 @@ properties:
     description: |
       Enables NTP client service.
     type: boolean
+  mode7:
+    description: |
+      Enables mode7 for the NTP server.
+    type: boolean
   strata:
     description: |
       List of NTP stratums to keep the time in sync.
     type: array
+    minProperties: 1
     items:
-      $ref: "#/definitions/stratum"
+      $ref: "#/definitions/_ntp:common:strata"
+  stratum:
+    description: |
+      List of NTP stratums to keep the time in sync. If define used instead of strata
+    type: object
+    patternProperties:
+      "^[0-9]*$":
+        $ref: "#/definitions/_ntp:common:stratum"
+  auth:
+    description: |
+     Support of ntp auth.
+    type: object
+    additionalProperties: false
+    required: [enabled, secrets]
+    properties:
+      enabled:
+        description: |
+          Enables NTP auth.
+        type: boolean
+      secrets:
+        description: |
+          Dict with secrets
+        type: object
+        additionalProperties: false
+        minProperties: 1
+        patternProperties:
+          "^[0-9]*$":
+            $ref: '#/definitions/_ntp:common:secret'
 
 definitions:
-  stratum:
+  _ntp:common:strata:
     description: |
       Hostname or IP address of the stratum server.
     type: string
     format: hostname-ip
+  _ntp:common:stratum:
+    description: |
+      Define exactly one ntp stratum server with more parameters.
+    type: object
+    additionalProperties: false
+    minProperties: 1
+    required: [server]
+    properties:
+      server:
+        type: string
+      key_id:
+        type: integer
+  _ntp:common:secret:
+    description: |
+     Define exactly one ntp auth secret
+    type: object
+    additionalProperties: false
+    minProperties: 1
+    required: [secret_type, secret, trustedkey ]
+    properties:
+      secret_type:
+        type: string
+      secret:
+        type: string
+      trustedkey:
+        type: boolean

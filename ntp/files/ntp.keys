@@ -1,0 +1,15 @@
+{%- from "ntp/map.jinja" import client, server with context %}
+
+{%- set secrets = {} %}
+
+{%- if client.get('auth', {}).get('enabled', False) %}
+{%- do secrets.update(client.auth.secrets) %}
+{%- endif %}
+
+{%- if server.get('auth', {}).get('enabled', False) %}
+{%- do secrets.update(server.auth.secrets) %}
+{%- endif %}
+
+{%- for key_name, key in secrets.items() %}
+{{ key_name }} {{ key.secret_type }} {{ key.secret }}
+{%- endfor %}

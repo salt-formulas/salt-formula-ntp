@@ -5,13 +5,14 @@ classes:
 parameters:
   _param:
     ntp_strata_host1: ntp.cesnet.cz
-    ntp_strata_host2: pool.ntp.org
+    ntp_strata_key1: ~
   ntp:
     client:
       enabled: true
-      strata:
-      - ${_param:ntp_strata_host1}
-      - ${_param:ntp_strata_host2}
+      stratum:
+        primary:
+          server: ${_param:ntp_strata_host1}
+          key_id: ${_param:ntp_strata_key1}
     server:
       enabled: false
       mode7: false

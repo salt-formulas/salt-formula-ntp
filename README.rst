@@ -1,5 +1,5 @@
 ===
-NTP 
+NTP
 ===
 
 Network time synchronisation services.
@@ -7,7 +7,7 @@ Network time synchronisation services.
 Sample pillars
 ==============
 
-NTP client
+NTP client (old version), not used when stratum parameter exists
 
 .. code-block:: yaml
 
@@ -17,6 +17,115 @@ NTP client
         strata:
         - ntp.cesnet.cz
         - ntp.nic.cz
+
+NTP client (extended definitions with auth)
+
+.. code-block:: yaml
+
+    ntp:
+      client:
+        enabled: true
+        stratum:
+          primary:
+            server: ntp.cesnet.cz
+            key_id: 1
+          secondary:
+            server: ntp.nic.cz
+            key_id: 2
+
+NTP with MD5 auth
+Requires extended definitions
+
+.. code-block:: yaml
+
+    ntp:
+      client:
+        enabled: true
+        auth:
+          enabled: true
+          secrets:
+            1:
+              secret_type: 'M'
+              secret: 'Runrabbitrundigthath'
+              trustedkey: true
+            2:
+              secret_type: 'M'
+              secret: 'Howiwishyouwereherew'
+              trustedkey: true
+        stratum:
+          primary:
+            server: ntp.cesnet.cz
+            key_id: 1
+          secondary:
+            server: ntp.nic.cz
+            key_id: 2
+
+.. code-block:: yaml
+
+    ntp:
+      client:
+        enabled: false
+      server:
+        enabled: true
+        auth:
+          enabled: true
+          secrets:
+            1:
+              secret_type: 'M'
+              secret: 'Runrabbitrundigthath'
+              trustedkey: true
+            2:
+              secret_type: 'M'
+              secret: 'Howiwishyouwereherew'
+              trustedkey: true
+        stratum:
+          primary:
+            server: ntp.cesnet.cz
+            key_id: 1
+          secondary:
+            server: ntp.nic.cz
+            key_id: 2
+
+Peering (simple):
+
+.. code-block:: yaml
+
+    ntp:
+      server:
+        peers:
+        - 192.168.0.241
+        - 192.168.0.242
+
+Peering (extended definitions):
+
+.. code-block:: yaml
+
+    ntp:
+      server:
+        peers:
+          1:
+            host: 192.168.31.1
+          2:
+            host: 192.168.31.2
+          3:
+            host: 192.168.31.3
+
+Enable listen/ignote on specific addresses
+
+.. code-block:: yaml
+
+    ntp:
+      server:
+          1:
+            value: wildcard
+            action: ignore
+          2:
+            value: ::1
+            action: listen
+          3:
+            value: 192.168.31.1
+            action: listen
+
 
 Read more
 =========

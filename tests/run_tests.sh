@@ -2,7 +2,8 @@
 
 ###
 # Script requirments:
-#  apt-get install -y python-yaml virtualenv git
+#apt-get install -y python-yaml virtualenv git
+
 set -e
 [ -n "$DEBUG" ] && set -x
 
@@ -42,12 +43,12 @@ log_err() {
 
 setup_virtualenv() {
     log_info "Setting up Python virtualenv"
+    dependency_check virtualenv
     virtualenv $VENV_DIR
     source ${VENV_DIR}/bin/activate
     python -m pip install salt${PIP_SALT_VERSION}
-    python -m pip install reno
-    if [[ -f ${CURDIR}/pip_requirements.txt ]]; then
-       python -m pip install -r ${CURDIR}/pip_requirements.txt
+    if [[ -f ${CURDIR}/test-requirements.txt ]]; then
+       python -m pip install -r ${CURDIR}/test-requirements.txt
     fi
 }
 
@@ -94,7 +95,6 @@ file_roots:
   base:
   - ${SALT_FILE_DIR}
   - ${CURDIR}/..
-  - /usr/share/salt-formulas/env
 
 pillar_roots:
   base:
@@ -110,7 +110,7 @@ fetch_dependency() {
     dep_root="${DEPSDIR}/$(basename $dep_source .git)"
     dep_metadata="${dep_root}/metadata.yml"
 
-    [ -d /usr/share/salt-formulas/env/${dep_name} ] && { log_info "Dependency $dep_name already present in system-wide salt env"; return 0; }
+    dependency_check git
     [ -d $dep_root ] && { log_info "Dependency $dep_name already fetched"; return 0; }
 
     log_info "Fetching dependency $dep_name"
@@ -161,10 +161,12 @@ prepare() {
     setup_pillar
     setup_salt
     install_dependencies
+    link_modules
 }
 
 lint_releasenotes() {
     [[ ! -f "${VENV_DIR}/bin/activate" ]] && setup_virtualenv
+    source ${VENV_DIR}/bin/activate
     reno lint ${CURDIR}/../
 }
 
@@ -201,19 +203,38 @@ real_run() {
 }
 
 run_model_validate(){
-    [[ -d ${SCHEMARDIR} ]] || { log_err "${SCHEMARDIR} not found!"; return 1; }
+  # Run modelschema.model_validate validation.
+  # TEST iterateble, run for `each formula ROLE against each ROLE_PILLARNAME`
+  # Pillars should be named in conviend ROLE_XXX.sls or ROLE.sls
+  # Example:
+  # client.sls  client_auth.sls  server.sls  server_auth.sls
+  if [ -d ${SCHEMARDIR} ]; then
     # model validator require py modules
     fetch_dependency "salt:https://github.com/salt-formulas/salt-formula-salt"
     link_modules
-    # Rendered Example:
-    # salt-call --local -c /test1/maas/tests/build/salt --id=maas_cluster modelschema.model_validate maas cluster
+    salt_run saltutil.clear_cache; salt_run saltutil.refresh_pillar; salt_run saltutil.sync_all;
     for role in ${SCHEMARDIR}/*.yaml; do
-        state_name=$(basename "${role%*.yaml}")
-        minion_id="${state_name}"
-        # in case debug-reruns, usefull to make cleanup
-        [ -n "$DEBUG" ] && { salt_run saltutil.clear_cache; salt_run saltutil.refresh_pillar; salt_run saltutil.sync_all; }
-        salt_run --id=${minion_id} modelschema.model_validate ${FORMULA_NAME} ${state_name} || { log_err "Execution of ${FORMULA_NAME}.${state_name} failed"; exit 1 ; }
+      role_name=$(basename "${role%*.yaml}")
+      for pillar in pillar/${role_name}*.sls; do
+        pillar_name=$(basename "${pillar%*.sls}")
+        local _message="FORMULA:${FORMULA_NAME} ROLE:${role_name} against PILLAR:${pillar_name}"
+        log_info "model_validate ${_message}"
+        # Rendered Example:
+        # python $(which salt-call) --local -c /test1/maas/tests/build/salt --id=maas_cluster modelschema.model_validate maas cluster
+        salt_run -m ${DEPSDIR}/salt-formula-salt --id=${pillar_name} modelschema.model_validate ${FORMULA_NAME} ${role_name} || { log_err "Execution of model_validate ${_message} failed"; exit 1 ; }
+      done
     done
+  else
+    log_info "${SCHEMARDIR} not found!";
+  fi
+}
+
+dependency_check() {
+  local DEPENDENCY_COMMANDS=$*
+
+  for DEPENDENCY_COMMAND in $DEPENDENCY_COMMANDS; do
+    which $DEPENDENCY_COMMAND > /dev/null || ( log_err "Command \"$DEPENDENCY_COMMAND\" can not be found in default path."; exit 1; )
+  done
 }
 
 _atexit() {

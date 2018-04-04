@@ -5,11 +5,20 @@ graph:
   service: ntp.client
   type: software-system
   relations:
-  {%- for stratum in client.strata %}
+  {%- if client.stratum is defined %}
+  {%- for _, stratum in client.stratum.items() %}
   - service: other-service
+    host_external: udp://{{ stratum.server }}
+    direction: source
+    type: udp
+  {%- endfor %}
+  {%- else %}
+  {%- for stratum in client.strata %}
+    - service: other-service
     host_external: udp://{{ stratum }}
     direction: source
     type: udp
   {%- endfor %}
+  {%- endif %}
 {%- endif %}
 

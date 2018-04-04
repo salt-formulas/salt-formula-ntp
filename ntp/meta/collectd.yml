@@ -1,6 +1,6 @@
 {% from "ntp/map.jinja" import client with context %}
 
-{%- if client.get('enabled', False) and client.mode7 %}
+{%- if client.get('enabled', False) and client.get('mode7', False) %}
 local_plugin:
   ntp_server_status:
     plugin: ntpd
