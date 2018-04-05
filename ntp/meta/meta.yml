@@ -14,7 +14,7 @@ graph:
   {%- endfor %}
   {%- else %}
   {%- for stratum in client.strata %}
-    - service: other-service
+  - service: other-service
     host_external: udp://{{ stratum }}
     direction: source
     type: udp
