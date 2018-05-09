@@ -1,17 +1,18 @@
-{%- from "ntp/map.jinja" import client with context %}
+{%- from "ntp/map.jinja" import client, monitoring with context %}
 
 {%- if client.get('enabled', False) %}
-{%- raw %}
 server:
   alert:
-    NtpOffset:
+    NtpOffsetTooHigh:
+      {%- set threshold = monitoring.ntp_offset_threshold %}
       if: >-
-        ntpq_offset >= 250
+        ntpq_offset >= {{ threshold }}
+      for: 2m
       labels:
         severity: warning
         service: ntp
       annotations:
-        summary: 'NTP offset is too high'
-        description: 'NTP offset is higher than 250ms on node {{ $labels.host }}'
+        summary: "NTP offset reached the limit of {{ threshold }}ms{%- raw %}"
+        description: "The NTP offset on the {{ $labels.host }} node is {{ $value }}ms for at least 2 minutes."
 {%- endraw %}
 {%- endif %}

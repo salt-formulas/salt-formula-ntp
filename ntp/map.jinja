@@ -33,3 +33,10 @@
         }
     },
 }, merge=salt['pillar.get']('ntp:server')) %}
+
+{%- set monitoring = salt['grains.filter_by']({
+  'default': {
+    'ntp_offset_threshold': 200,
+  },
+}, grain='os_family', merge=salt['pillar.get']('ntp:monitoring')) %}
+
