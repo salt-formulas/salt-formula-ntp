@@ -13,6 +13,10 @@ properties:
     description: |
       Enables NTP client service.
     type: boolean
+  logfile:
+    description: |
+      NTP log file path.
+    type: string
   mode7:
     description: |
       Enables mode7 for the NTP server.

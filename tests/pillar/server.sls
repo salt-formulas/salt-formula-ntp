@@ -1,6 +1,7 @@
 ntp:
   server:
     enabled: true
+    logfile: '/var/log/ntp.log'
     mode7: true
     orphan: 5
     peers:

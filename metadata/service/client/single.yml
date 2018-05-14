@@ -9,6 +9,7 @@ parameters:
   ntp:
     client:
       enabled: true
+      logfile: '/var/log/ntp.log'
       stratum:
         primary:
           server: ${_param:ntp_strata_host1}
@@ -16,3 +17,4 @@ parameters:
     server:
       enabled: false
       mode7: false
+      logfile: '/var/log/ntp.log'
