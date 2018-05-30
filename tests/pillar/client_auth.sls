@@ -1,6 +1,7 @@
 ntp:
   client:
     enabled: true
+    remove_dhcp_conf: true
     auth:
       enabled: true
       secrets:

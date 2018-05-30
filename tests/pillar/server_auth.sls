@@ -15,6 +15,7 @@ ntp:
           trustedkey: false
     mode7: true
     orphan: 5
+    remove_dhcp_conf: true
     peers:
     - host: 192.168.31.1
     - host: 192.168.31.2

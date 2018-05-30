@@ -21,6 +21,11 @@ properties:
     description: |
       Enables mode7 for the NTP server.
     type: boolean
+  remove_dhcp_conf:
+    description: |
+     Forcibly remove "/var/lib/ntp/ntp.conf.dhcp" file.
+     WA for issue https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=600661
+    type: boolean
   strata:
     description: |
       List of NTP stratums to keep the time in sync.

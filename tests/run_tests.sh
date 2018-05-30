@@ -28,6 +28,8 @@ SALT_CACHE_EXTMODS_DIR=${SALT_CACHE_EXTMODS_DIR:-${SALT_CONFIG_DIR}/cache_master
 
 SALT_OPTS="${SALT_OPTS} --retcode-passthrough --local -c ${SALT_CONFIG_DIR} --log-file=/dev/null"
 
+IGNORE_MODELVALIDATE_MASK=${IGNORE_MODELVALIDATE_MASK:-"novalidate"}
+
 if [ "x${SALT_VERSION}" != "x" ]; then
     PIP_SALT_VERSION="==${SALT_VERSION}"
 fi
@@ -154,7 +156,11 @@ salt_run() {
 }
 
 prepare() {
-    [ -d ${BUILDDIR} ] && mkdir -p ${BUILDDIR}
+    if [[ -f ${BUILDDIR}/.prepare_done ]]; then
+      log_info "${BUILDDIR}/.prepare_done exist, not rebuilding BUILDDIR"
+      return
+    fi
+    [[ -d ${BUILDDIR} ]] && mkdir -p ${BUILDDIR}
 
     [[ ! -f "${VENV_DIR}/bin/activate" ]] && setup_virtualenv
     setup_mock_bin
@@ -162,6 +168,7 @@ prepare() {
     setup_salt
     install_dependencies
     link_modules
+    touch ${BUILDDIR}/.prepare_done
 }
 
 lint_releasenotes() {
@@ -215,7 +222,7 @@ run_model_validate(){
     salt_run saltutil.clear_cache; salt_run saltutil.refresh_pillar; salt_run saltutil.sync_all;
     for role in ${SCHEMARDIR}/*.yaml; do
       role_name=$(basename "${role%*.yaml}")
-      for pillar in pillar/${role_name}*.sls; do
+      for pillar in $(ls pillar/${role_name}*.sls | grep -v ${IGNORE_MODELVALIDATE_MASK} ); do
         pillar_name=$(basename "${pillar%*.sls}")
         local _message="FORMULA:${FORMULA_NAME} ROLE:${role_name} against PILLAR:${pillar_name}"
         log_info "model_validate ${_message}"

@@ -68,4 +68,16 @@ ntp_service:
   - watch:
     - file: /etc/ntp.conf
 
+{%- if server.get('remove_dhcp_conf', False) %}
+ntp_remove_dhcp_conf:
+ file.absent:
+ - name: /var/lib/ntp/ntp.conf.dhcp
+ - watch_in:
+   - service: ntp_service
+ - require_in:
+   - file: /etc/ntp.conf
 {%- endif %}
+
+{%- endif %}
+
+

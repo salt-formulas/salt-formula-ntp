@@ -86,6 +86,15 @@ Requires extended definitions
             server: ntp.nic.cz
             key_id: 2
 
+Cleanup ntp configurations left by DHCP:
+
+.. code-block:: yaml
+
+    ntp:
+      client:
+        enabled: true
+        remove_dhcp_conf: true # default false
+
 Peering (simple):
 
 .. code-block:: yaml

@@ -29,6 +29,11 @@ properties:
     type: number
     minimum: 0
     maximum: 8
+  remove_dhcp_conf:
+    description: |
+     Forcibly remove "/var/lib/ntp/ntp.conf.dhcp" file.
+     WA for issue https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=600661
+    type: boolean
   restrict:
     description: |
       List of subnets that servers gives time to.
