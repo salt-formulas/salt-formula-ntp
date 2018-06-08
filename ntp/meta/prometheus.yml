@@ -13,6 +13,6 @@ server:
         service: ntp
       annotations:
         summary: "NTP offset reached the limit of {{ threshold }}ms{%- raw %}"
-        description: "The NTP offset on the {{ $labels.host }} node is {{ $value }}ms for at least 2 minutes."
+        description: "The NTP offset on the {{ $labels.host }} node is {{ $value }}ms for 2 minutes."
 {%- endraw %}
 {%- endif %}
