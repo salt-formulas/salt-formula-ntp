@@ -2,6 +2,10 @@
 {%- if client is defined and client.get('enabled', False) %}
 agent:
   input:
+    procstat:
+      process:
+        ntpd:
+          exe: ntpd
     ntp:
       template: ntp/files/telegraf.conf
 {%- endif %}
