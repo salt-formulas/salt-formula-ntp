@@ -137,6 +137,18 @@ different use cases.
               value: 192.168.31.1
               action: listen
 
+* The NTP client orphan mode definition:
+
+  .. code-block:: yaml
+
+      ntp:
+        client:
+          enabled: true
+          orphan: 5
+          stratum:
+            primary:
+              server: ntp.cesnet.cz
+
 **Read more**
 
 * https://collectd.org/wiki/index.php/Plugin:NTPd
